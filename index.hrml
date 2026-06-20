@@ -2,22 +2,28 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>ROOT ONLINE</title>
+<title>ROOT ONLINE V9</title>
 <style>
 body { background:#000; color:#0f0; font-family:monospace; padding:20px; }
-button { background:#111; color:#0f0; border:1px solid #0f0; padding:10px; }
+button { background:#111; color:#0f0; border:1px solid #0f0; padding:10px; margin-right:10px; }
+#status { margin-top:20px; white-space:pre; }
 </style>
 </head>
 <body>
 
-<h2>ROOT ONLINE SYSTEM</h2>
-<pre id="out"></pre>
+<h2>ROOT ONLINE SYSTEM – V9</h2>
 
-<button onclick="LOAD()">LOAD ROOT.STATE</button>
+<div>
+    <button onclick="LOAD()">LOAD ROOT.STATE</button>
+    <button onclick="triggerError(1)">ERROR PHASE 1</button>
+    <button onclick="triggerError(2)">ERROR PHASE 2</button>
+</div>
+
+<pre id="status"></pre>
 
 <script>
 // ===============================
-// ROOT STATE (nur online lesen)
+// ROOT STATE (read-only)
 // ===============================
 let ROOT = 0;
 let E8   = Array(8).fill(0);
@@ -28,7 +34,7 @@ let errors_phase2 = 0;
 let phase = 1;
 
 // ===============================
-// LOAD (nur lesen, kein schreiben)
+// LOAD
 // ===============================
 async function LOAD() {
     const res = await fetch("root.state");
@@ -39,21 +45,22 @@ async function LOAD() {
     E8   = lines[1].split("").map(Number);
     E16  = lines[2].split("").map(Number);
 
-    display("LOADED ONLINE\n" + text);
+    display("LOADED\n" + text);
 }
 
 // ===============================
-// ERROR COUNTING
+// ERROR
 // ===============================
-function ERROR() {
-    if (phase === 1) errors_phase1++;
-    else errors_phase2++;
+function triggerError(p) {
+    if (p === 1) errors_phase1++;
+    if (p === 2) errors_phase2++;
 
+    displayStatus();
     SCHUTZ();
 }
 
 // ===============================
-// SCHUTZ-MECHANIK
+// SCHUTZ
 // ===============================
 async function SCHUTZ() {
     if (errors_phase1 >= 4 && errors_phase2 >= 3) {
@@ -106,7 +113,7 @@ function three_hits() {
 }
 
 // ===============================
-// Rücksprung (nur LOAD)
+// MODI_ALT
 // ===============================
 function MODI_ALT() {
     LOAD();
@@ -114,10 +121,20 @@ function MODI_ALT() {
 }
 
 // ===============================
-// OUTPUT
+// STATUS
 // ===============================
 function display(msg) {
-    document.getElementById("out").textContent = msg;
+    document.getElementById("status").textContent = msg;
+}
+
+function displayStatus() {
+    document.getElementById("status").textContent =
+        "ROOT: " + ROOT +
+        "\nE8:   " + E8.join("") +
+        "\nE16:  " + E16.join("") +
+        "\nPhase: " + phase +
+        "\nErrors P1: " + errors_phase1 +
+        "\nErrors P2: " + errors_phase2;
 }
 </script>
 

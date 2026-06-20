@@ -1,1 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ROOT SYSTEM</title>
+<style>
+body { background:#000; color:#0f0; font-family:monospace; padding:20px; }
+button { background:#111; color:#0f0; border:1px solid #0f0; padding:10px; }
+</style>
+</head>
+<body>
+
+<h2>ROOT SYSTEM</h2>
+<pre id="out"></pre>
+
+<button onclick="SAVE()">SAVE</button>
+<button onclick="LOAD()">LOAD</button>
+<button onclick="simulateError()">ERROR</button>
+
+<script>
+// ===============================
+// ROOT STATE
+// ===============================
+let ROOT = 0;          // 1-Bit Systemzustand
+let E8   = Array(8).fill(0);     // 8-Eck QI-Träger
+let E16  = Array(16).fill(0);    // 16-Eck IQ-Träger
+
+let errors_phase1 = 0;
+let errors_phase2 = 0;
+let phase = 1;
+
+// ===============================
+// SAVE
+// ===============================
+async function SAVE() {
+    const data =
+        ROOT + "\n" +
+        E8.join("") + "\n" +
+        E16.join("");
+
+    await fetch("root.state", {
+        method: "PUT",
+        body: data
+    });
+
+    display("SAVED\n" + data);
+}
+
+// ===============================
+// LOAD
+// ===============================
+async function LOAD() {
+    const res = await fetch("root.state");
+    const text = await res.text();
+    const lines = text.split("\n");
+
+    ROOT = parseInt(lines[0]);
+    E8   = lines[1].split("").map(Number);
+    E16  = lines[2].split("").map(Number);
+
+    display("LOADED\n" + text);
+}
+
+// ===============================
+// ERROR COUNTING
+// ===============================
+function simulateError() {
+    ERROR();
+    display("ERROR registered. Phase=" + phase +
+            " P1=" + errors_phase1 + " P2=" + errors_phase2);
+}
+
+function ERROR() {
+    if (phase === 1) errors_phase1++;
+    else errors_phase2++;
+
+    SCHUTZ();
+}
+
+// ===============================
+// SCHUTZ-MECHANIK
+// ===============================
+async function SCHUTZ() {
+    if (errors_phase1 >= 4 && errors_phase2 >= 3) {
+        display("SCHUTZ aktiv – 3 Sekunden warten…");
+
+        const ok = await confirm_window();
+        if (ok) {
+            const hits = await three_hits();
+            if (hits) {
+                display("SCHUTZ bestanden – weiter.");
+                return;
+            }
+        }
+        MODI_ALT();
+    }
+}
+
+// ===============================
+// 3 Sekunden + Taste
+// ===============================
+function confirm_window() {
+    return new Promise(resolve => {
+        setTimeout(() => {
+            display("Taste drücken (beliebige Taste)...");
+            window.onkeydown = () => {
+                window.onkeydown = null;
+                resolve(true);
+            };
+        }, 3000);
+    });
+}
+
+// ===============================
+// 3 Treffer
+// ===============================
+function three_hits() {
+    return new Promise(resolve => {
+        let hits = 0;
+        display("3 Treffer nötig…");
+
+        window.onclick = () => {
+            hits++;
+            display("Treffer: " + hits + "/3");
+            if (hits >= 3) {
+                window.onclick = null;
+                resolve(true);
+            }
+        };
+    });
+}
+
+// ===============================
+// Rücksprung
+// ===============================
+function MODI_ALT() {
+    LOAD();
+    display("Rücksprung in alten Zustand (MODI_ALT).");
+}
+
+// ===============================
+// OUTPUT
+// ===============================
+function display(msg) {
+    document.getElementById("out").textContent = msg;
+}
+</script>
+
+</body>
+</html>
 

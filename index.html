@@ -1,14 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
 <meta charset="UTF-8">
 <title>ROOT ONLINE V9</title>
+
 <style>
-body { background:#000; color:#0f0; font-family:monospace; padding:20px; }
-button { background:#111; color:#0f0; border:1px solid #0f0; padding:10px; margin-right:10px; }
-#status { margin-top:20px; white-space:pre; }
+body {
+    background:#000;
+    color:#0f0;
+    font-family:monospace;
+    padding:20px;
+}
+
+h2 {
+    color:#6cf;
+    letter-spacing:3px;
+}
+
+button {
+    background:#111;
+    color:#0f0;
+    border:1px solid #0f0;
+    padding:10px 15px;
+    margin-right:10px;
+    cursor:pointer;
+}
+
+button:hover {
+    background:#0f0;
+    color:#000;
+}
+
+#status {
+    margin-top:20px;
+    white-space:pre;
+    background:#111;
+    border:1px solid #333;
+    padding:15px;
+}
 </style>
 </head>
+
 <body>
 
 <h2>ROOT ONLINE SYSTEM – V9</h2>
@@ -19,7 +51,7 @@ button { background:#111; color:#0f0; border:1px solid #0f0; padding:10px; margi
     <button onclick="triggerError(2)">ERROR PHASE 2</button>
 </div>
 
-<pre id="status"></pre>
+<pre id="status">System bereit.</pre>
 
 <script>
 // ===============================
@@ -37,15 +69,19 @@ let phase = 1;
 // LOAD
 // ===============================
 async function LOAD() {
-    const res = await fetch("root.state");
-    const text = await res.text();
-    const lines = text.split("\n");
+    try {
+        const res = await fetch("root.state");
+        const text = await res.text();
+        const lines = text.trim().split("\n");
 
-    ROOT = parseInt(lines[0]);
-    E8   = lines[1].split("").map(Number);
-    E16  = lines[2].split("").map(Number);
+        ROOT = parseInt(lines[0]);
+        E8   = lines[1].split("").map(Number);
+        E16  = lines[2].split("").map(Number);
 
-    display("LOADED\n" + text);
+        display("LOADED\n" + text);
+    } catch (e) {
+        display("Fehler: root.state konnte nicht geladen werden.");
+    }
 }
 
 // ===============================

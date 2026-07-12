@@ -1,140 +1,79 @@
-📄 README.md — piOP v1.0 — Operator‑Modul (RAW‑neutral)
-Neutraler Operator • 0‑MANN • Slave‑Modus • NC‑kompatibel • SYNC‑fähig
-🟦 1. Identität
-piOP ist ein Operator‑Modul, das:
+# piOP – ROOT ONLINE SYSTEM V9
 
-keine eigenen Werte trägt
+Das Projekt **piOP** enthält das ROOT‑ONLINE‑V9‑System.  
+Es simuliert einen geschützten Zustand mit Fehlerphasen, Rücksprungmechanismen und einem interaktiven Schutzsystem.
 
-keine Logik ausführt
+---
 
-keine Engine besitzt
+## 🎯 Zweck des Systems
 
-keine Achsen besitzt
+Das ROOT‑ONLINE‑V9‑Modul dient als:
 
-keine Marker besitzt
+- Fehler‑Simulator  
+- Schutz‑Mechanismus‑Tester  
+- Zustand‑Lader (root.state)  
+- Interaktive Sicherheitslogik  
 
-keine GEN/EICH/ID besitzt
+Es ist vollständig clientseitig und benötigt keine Server‑Komponenten.
 
-piOP ist ein 0‑MANN‑Operator.
+---
 
-🟦 2. Zweck
-piOP dient als:
+## 📁 Dateien im Repository
 
-Operator‑Platzhalter
+| Datei | Funktion |
+|-------|----------|
+| `index.html` | Hauptsystem, UI, Logik, Schutzmechanismen |
+| `root.state` | Externer Zustand (ROOT, E8, E16) |
+| `README.md` | Dokumentation |
 
-Operator‑Slave
+---
 
-Operator‑Durchleitungsmodul
+## 🧬 Struktur von `root.state`
 
-Operator‑Neutralraum
+Die Datei besteht aus **3 Zeilen**:
 
-Es ist kompatibel mit:
+1. **ROOT** – eine einzelne Zahl  
+2. **E8** – genau 8 Ziffern (0/1)  
+3. **E16** – genau 16 Ziffern (0/1)
 
-NC
+Beispiel:
 
-RAW
-
-SYNC
-
-RESPO
-
-tri5mix
-
-ERROR
-
-🟦 3. Modi (alle 3 Operator‑Zustände)
-1) piOP‑ROOT — RAW‑Operator
-Inhalt: leer
-
-Achsen: keine
-
-Marker: keine
-
-MODE: RAW
-
-Rolle: Slave
-
-Trigger: piOP‑ROOT.trigger
-
-NC.link: NC.link‑Root
-
-RAW‑Operator, Grundneutralität.
-
-2) piOP‑NC — Neutralraum‑Operator
-Inhalt: leer
-
-Achsen: 12/4/v (mitlaufend)
-
-Marker: keine
-
-MODE: NC
-
-Rolle: Slave
-
-Trigger: piOP‑NC.trigger
-
-NC.link: NC.link‑Flow
-
-NC‑Operator, Flow‑Neutralität.
-
-3) piOP‑SYNC — Kernel‑Operator
-Inhalt: leer
-
-Achsen: 19 (mitlaufend)
-
-Marker: keine
-
-MODE: SYNC
-
-Rolle: Slave
-
-Trigger: piOP‑SYNC.trigger
-
-NC.link: NC.link_SyncPoint
-
-SYNC‑Operator, Kernel‑Stabilität.
-
-🟦 4. Vergleich — Alle piOP‑Modi
-Modus	Inhalt	Rolle	Achsen	MODE	Trigger	NC.link
-piOP‑ROOT	leer	Slave	keine	RAW	ROOT.trigger	Root
-piOP‑NC	leer	Slave	12/4/v	NC	NC.trigger	Flow
-piOP‑SYNC	leer	Slave	19	SYNC	SYNC.trigger	SyncPoint
+1
+01010101
+0000111100001111
 
 
-🟦 5. Warum piOP leer ist (und korrekt bleibt)
-piOP ist ein Operator‑Modul, das:
+---
 
-passiv bewertet
+## 🔧 Schutzmechanismus
 
-mitläuft
+Der Schutz aktiviert sich, wenn:
 
-neutralisiert
+- **Phase‑1‑Fehler ≥ 4**  
+- **Phase‑2‑Fehler ≥ 3**
 
-stabilisiert
+Ablauf:
 
-nicht eingreift
+1. 3 Sekunden warten  
+2. Taste drücken  
+3. 3 Treffer klicken  
+4. Schutz bestanden → System läuft weiter  
+5. Schutz nicht bestanden → Rücksprung (`MODI_ALT`)
 
-nicht berechnet
+---
 
-nicht interpretiert
+## 📌 Status
 
-Darum ist ein leeres README = korrekt.
+Das System ist stabil, modular und bereit für Erweiterungen.
 
-Ein Operator muss leer sein, um neutral zu bleiben.
+# piOP – ROOT ONLINE V9
 
-🟦 6. Status
-RAW‑neutral
+Dieses Projekt enthält das ROOT‑ONLINE‑V9‑System:
 
-NC‑kompatibel
+- Ladefunktion für `root.state`
+- Fehlerphasen‑Simulation
+- Schutzmechanismus mit Interaktion
+- Rücksprung in alten Zustand
 
-SYNC‑fähig
+`root.state` muss 3 Zeilen enthalten:
 
-RESPO‑fähig
-
-ERROR‑kompatibel
-
-tri5mix‑kompatibel
-
-0‑MANN
-
-Slave‑Modus
